@@ -1,18 +1,21 @@
 # ResumeAI — Smart Resume Analyzer & ATS Scorer
 
-An AI-powered resume analysis tool that helps job seekers optimize their resumes for Applicant Tracking Systems (ATS). Upload your resume, paste a job description, and get an instant score with actionable AI suggestions.
+An AI-powered resume analysis tool that helps job seekers optimize their resumes for Applicant Tracking Systems (ATS). Upload your resume, paste a job description, and get an instant score with actionable AI suggestions, a tailored cover letter, and AI-rewritten bullet points.
 
 ---
 
 ## Features
 
-- **Resume Parsing** — Supports PDF and DOCX formats
-- **ATS Score** — Comprehensive scoring based on keywords, format, skills, and experience quality
-- **Keyword Analysis** — Matches your resume against a job description and highlights missing keywords with priority levels
-- **AI Suggestions** — Powered by Llama 3.3 (via Groq) with Claude as fallback — generates specific, actionable improvement recommendations
-- **Score Visualization** — Radar chart, doughnut chart, and progress bars to visualize resume strength across categories
-- **Analysis History** — Track all past analyses with score trend chart and pagination
-- **Stats Dashboard** — View total analyses, average score, and score distribution
+- **Resume Parsing** — Supports PDF and DOCX formats (up to 5 MB)
+- **6-Dimension ATS Score** — Comprehensive scoring across keywords, skills, format, experience, education, and content quality
+- **Keyword Analysis** — Matches resume against a job description; highlights matched and missing keywords with priority levels (high / medium / low)
+- **AI Suggestions** — Powered by Llama 3.3 (via Groq) with Claude as fallback — generates strengths, improvements, keyword tips, and format tips
+- **Cover Letter Generator** — AI writes a tailored, 4-paragraph cover letter using your resume and the target job description
+- **Bullet Point Rewriter** — Paste any resume bullet and get 3 AI-rewritten variants: Technical, Impact, and Leadership
+- **Score Visualization** — Radar chart, doughnut chart, and dimension score bars
+- **Analysis History** — Track all past analyses with a score trend chart and pagination
+- **Stats Dashboard** — Total analyses, average score, and score distribution
+- **Offline Mode** — Works fully without any API key using the built-in rule-based suggestion engine
 
 ---
 
@@ -20,12 +23,15 @@ An AI-powered resume analysis tool that helps job seekers optimize their resumes
 
 | Layer | Technology |
 |---|---|
-| Frontend | React, Bootstrap 5, Chart.js |
-| Backend | Node.js, Express |
-| Database | MongoDB |
+| Frontend | React 18, Vite, Bootstrap 5, Chart.js, Axios, React Router |
+| Backend | Node.js 18+, Express |
+| Database | MongoDB (Mongoose) |
+| File Upload | Multer |
+| PDF Parsing | pdf-parse |
+| DOCX Parsing | mammoth |
 | Primary AI | Llama 3.3 via Groq API (free) |
 | Fallback AI | Anthropic Claude API |
-| File Parsing | pdf-parse (PDF), mammoth (DOCX) |
+| Final Fallback | Built-in rule-based engine (no API key required) |
 
 ---
 
@@ -53,19 +59,18 @@ The app works fully without any API key using the built-in rule-based suggestion
 ### Installation
 
 ```bash
-# Install all dependencies (root + server + client)
+# Install all dependencies (root + backend + frontend)
 npm run install:all
 ```
 
 ### Configuration
 
-Create a `.env` file inside the `backend/` directory based on the `.env.example` file provided:
+Create a `.env` file inside the `backend/` directory:
 
 ```
 PORT=5000
 MONGODB_URI=your_mongodb_connection_string
 GROQ_API_KEY=your_groq_api_key
-ANTHROPIC_API_KEY=your_anthropic_api_key
 CLIENT_URL=http://localhost:5173
 ```
 
@@ -76,40 +81,7 @@ CLIENT_URL=http://localhost:5173
 npm run dev
 ```
 
-- Frontend runs on `http://localhost:5173`
-- Backend API runs on `http://localhost:5000`
-
----
-
-## How It Works
-
-1. **Upload** your resume (PDF or DOCX)
-2. **Paste** the job description you are targeting *(optional but recommended)*
-3. **Analyze** — the system parses your resume, scores it, and matches keywords
-4. **Review** your ATS score breakdown, matched/missing keywords, and AI suggestions
-5. **Improve** your resume based on the recommendations and re-analyze
-
----
-
-## ATS Scoring Breakdown
-
-| Category | Weight | What it measures |
-|---|---|---|
-| Keyword Match | 40% | How many job description keywords appear in your resume |
-| Skills Coverage | 25% | Technical skills detected vs expected for the role |
-| Resume Format | 20% | Sections present, contact info, word count, quantified achievements |
-| Experience Quality | 15% | Years of experience, action verbs, measurable results |
-
----
-
-## Score Labels
-
-| Score | Label |
-|---|---|
-| 85 – 100 | Excellent |
-| 70 – 84 | Good |
-| 55 – 69 | Average |
-| 40 – 54 | Below Average |
-| 0 – 39 | Poor |
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:5000`
 
 ---
