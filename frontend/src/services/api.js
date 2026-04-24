@@ -29,6 +29,10 @@ export const resumeAPI = {
   deleteAnalysis: (id) => api.delete(`/resume/${id}`),
 
   getStats: () => api.get('/resume/stats'),
+
+  generateCoverLetter: (id) => api.post(`/resume/${id}/cover-letter`),
+
+  rewriteBullets: (id, text) => api.post(`/resume/${id}/rewrite`, { text }),
 };
 
 export default api;

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 const features = [
   { icon: 'bi-file-earmark-text-fill', color: '#4f46e5', bg: 'rgba(79,70,229,0.1)', title: 'Smart Parsing', desc: 'Supports PDF & DOCX. Extracts text, sections, and contact info automatically.' },
   { icon: 'bi-search', color: '#06b6d4', bg: 'rgba(6,182,212,0.1)', title: 'Keyword Matching', desc: 'Compares your resume against job descriptions to find matched and missing keywords.' },
-  { icon: 'bi-stars', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', title: 'AI Suggestions', desc: 'Claude AI generates specific, actionable recommendations to improve your score.' },
+  { icon: 'bi-stars', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', title: 'AI Suggestions', desc: 'AI generates specific, actionable recommendations to improve your ATS score.' },
   { icon: 'bi-speedometer2', color: '#10b981', bg: 'rgba(16,185,129,0.1)', title: 'ATS Score', desc: 'Get a comprehensive score based on keywords, format, skills, and experience quality.' },
   { icon: 'bi-graph-up', color: '#ec4899', bg: 'rgba(236,72,153,0.1)', title: 'Visual Analytics', desc: 'Interactive radar charts and progress bars to visualize your resume strength.' },
   { icon: 'bi-clock-history', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)', title: 'Analysis History', desc: 'Track all your past analyses and monitor improvement over time.' },
@@ -131,7 +131,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="py-4 bg-white border-top text-center text-muted">
-        <small>© 2024 ResumeAI — Smart ATS Resume Analyzer. Powered by Claude AI.</small>
+        <small>© 2024 ResumeAI — Smart ATS Resume Analyzer. Powered by AI.</small>
       </footer>
     </div>
   );

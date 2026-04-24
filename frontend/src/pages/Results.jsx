@@ -7,6 +7,8 @@ import RadarChart from '../components/RadarChart';
 import ScoreBar from '../components/ScoreBar';
 import KeywordSection from '../components/KeywordSection';
 import AISuggestions from '../components/AISuggestions';
+import CoverLetter from '../components/CoverLetter';
+import ResumeRewriter from '../components/ResumeRewriter';
 
 const LABEL_BG    = { Excellent: '#d1fae5', Good: '#dcfce7', Average: '#fef3c7', 'Below Average': '#ffedd5', Poor: '#fee2e2' };
 const LABEL_COLOR = { Excellent: '#047857', Good: '#16a34a', Average: '#d97706', 'Below Average': '#ea580c', Poor: '#dc2626' };
@@ -15,10 +17,12 @@ const WEIGHT_WITH_JD    = { 'Keyword Matching': 40, 'Skills Relevance': 20, 'Res
 const WEIGHT_WITHOUT_JD = { 'Skills Relevance': 30, 'Resume Structure': 30, 'Experience Quality': 20, 'Education': 12, 'Content Quality': 8 };
 
 const tabs = [
-  { id: 'overview',     label: 'Overview',       icon: 'bi-speedometer2' },
-  { id: 'keywords',     label: 'Keywords',        icon: 'bi-tags' },
-  { id: 'suggestions',  label: 'AI Suggestions',  icon: 'bi-stars' },
-  { id: 'skills',       label: 'Skills',          icon: 'bi-code-square' },
+  { id: 'overview',     label: 'Overview',        icon: 'bi-speedometer2' },
+  { id: 'keywords',     label: 'Keywords',         icon: 'bi-tags' },
+  { id: 'suggestions',  label: 'AI Suggestions',   icon: 'bi-stars' },
+  { id: 'skills',       label: 'Skills',           icon: 'bi-code-square' },
+  { id: 'coverletter',  label: 'Cover Letter',      icon: 'bi-envelope-paper' },
+  { id: 'rewriter',     label: 'Bullet Rewriter',  icon: 'bi-magic' },
 ];
 
 export default function Results() {
@@ -53,8 +57,8 @@ export default function Results() {
     );
   }
 
-  const hasJD     = !!data.jobDescription;
-  const weights   = hasJD ? WEIGHT_WITH_JD : WEIGHT_WITHOUT_JD;
+  const hasJD   = !!data.jobDescription;
+  const weights = hasJD ? WEIGHT_WITH_JD : WEIGHT_WITHOUT_JD;
 
   const radarScores = {
     keyword:        data.keywordScore        || 0,
@@ -108,7 +112,6 @@ export default function Results() {
                 ? 'Your resume needs some improvements.'
                 : 'Significant improvements recommended.'}
             </p>
-            {/* Weight legend */}
             <div className="text-start mt-3 pt-3 border-top">
               <p className="small fw-700 text-muted mb-2 text-uppercase" style={{ fontSize: '0.7rem', letterSpacing: 0.5 }}>
                 {hasJD ? 'Score Weights (with JD)' : 'Score Weights (no JD)'}
@@ -134,22 +137,24 @@ export default function Results() {
       </div>
 
       {/* ── Tabs ── */}
-      <ul className="nav nav-pills gap-1 mb-4 flex-wrap"
-        style={{ padding: '4px', background: '#f0f4ff', borderRadius: 12, display: 'inline-flex' }}>
-        {tabs.map((tab) => (
-          <li className="nav-item" key={tab.id}>
-            <button
-              className={`nav-link px-3 py-2 fw-600 small rounded-3 border-0 ${activeTab === tab.id ? 'active' : 'text-secondary'}`}
-              style={activeTab === tab.id
-                ? { background: 'linear-gradient(135deg,#4f46e5,#06b6d4)', color: 'white' }
-                : { background: 'transparent' }}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              <i className={`bi ${tab.icon} me-1`} />{tab.label}
-            </button>
-          </li>
-        ))}
-      </ul>
+      <div className="mb-4" style={{ overflowX: 'auto' }}>
+        <ul className="nav nav-pills gap-1 flex-nowrap"
+          style={{ padding: '4px', background: '#f0f4ff', borderRadius: 12, display: 'inline-flex', minWidth: 'max-content' }}>
+          {tabs.map((tab) => (
+            <li className="nav-item" key={tab.id}>
+              <button
+                className={`nav-link px-3 py-2 fw-600 small rounded-3 border-0 text-nowrap ${activeTab === tab.id ? 'active' : 'text-secondary'}`}
+                style={activeTab === tab.id
+                  ? { background: 'linear-gradient(135deg,#4f46e5,#06b6d4)', color: 'white' }
+                  : { background: 'transparent' }}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                <i className={`bi ${tab.icon} me-1`} />{tab.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {/* ── Overview Tab ── */}
       {activeTab === 'overview' && (
@@ -182,7 +187,6 @@ export default function Results() {
                 ))}
               </div>
 
-              {/* Per-dimension mini scores */}
               <div className="pt-3 border-top">
                 <p className="small fw-700 text-muted mb-2 text-uppercase" style={{ fontSize: '0.7rem', letterSpacing: 0.5 }}>Dimension Scores</p>
                 {[
@@ -193,7 +197,7 @@ export default function Results() {
                   { label: 'Education',  value: data.educationScore       || 0 },
                   { label: 'Content',    value: data.contentQualityScore  || 0 },
                 ].map((d) => {
-                  const pct  = d.na ? 0 : d.value;
+                  const pct   = d.na ? 0 : d.value;
                   const color = pct >= 70 ? '#10b981' : pct >= 50 ? '#f59e0b' : '#ef4444';
                   return (
                     <div key={d.label} className="d-flex align-items-center gap-2 mb-1">
@@ -223,6 +227,26 @@ export default function Results() {
                   </div>
                 </div>
               )}
+
+              {/* AI tools promo */}
+              <div className="mt-3 p-3 rounded-3"
+                style={{ background: 'rgba(79,70,229,0.04)', border: '1px solid rgba(79,70,229,0.15)' }}>
+                <p className="small fw-700 mb-2" style={{ color: '#4f46e5' }}>
+                  <i className="bi bi-magic me-1" />AI Writing Tools Available
+                </p>
+                <div className="d-flex gap-2 flex-wrap">
+                  <button className="btn btn-sm rounded-pill px-3 fw-600"
+                    style={{ background: 'rgba(79,70,229,0.1)', color: '#4f46e5', border: 'none', fontSize: '0.78rem' }}
+                    onClick={() => setActiveTab('coverletter')}>
+                    <i className="bi bi-envelope-paper me-1" />Cover Letter
+                  </button>
+                  <button className="btn btn-sm rounded-pill px-3 fw-600"
+                    style={{ background: 'rgba(79,70,229,0.1)', color: '#4f46e5', border: 'none', fontSize: '0.78rem' }}
+                    onClick={() => setActiveTab('rewriter')}>
+                    <i className="bi bi-magic me-1" />Bullet Rewriter
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -295,6 +319,41 @@ export default function Results() {
               <p className="small">Try adding a clear "Technical Skills" section to your resume.</p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* ── Cover Letter Tab ── */}
+      {activeTab === 'coverletter' && (
+        <div className="card-custom p-4 fade-in-up">
+          <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <div>
+              <h5 className="fw-700 mb-1"><i className="bi bi-envelope-paper text-primary me-2" />AI Cover Letter Generator</h5>
+              <p className="text-muted small mb-0">
+                Generates a tailored cover letter from your resume{data.jobTitle ? ` for ${data.jobTitle}` : ''}.
+              </p>
+            </div>
+          </div>
+          <CoverLetter
+            analysisId={data._id}
+            jobTitle={data.jobTitle}
+            hasJobDescription={hasJD}
+          />
+        </div>
+      )}
+
+      {/* ── Bullet Rewriter Tab ── */}
+      {activeTab === 'rewriter' && (
+        <div className="card-custom p-4 fade-in-up">
+          <div className="mb-4">
+            <h5 className="fw-700 mb-1"><i className="bi bi-magic text-primary me-2" />AI Bullet Point Rewriter</h5>
+            <p className="text-muted small mb-0">
+              Paste any weak bullet or job duty — AI rewrites it into 3 stronger versions using the STAR format.
+            </p>
+          </div>
+          <ResumeRewriter
+            analysisId={data._id}
+            jobTitle={data.jobTitle}
+          />
         </div>
       )}
     </div>

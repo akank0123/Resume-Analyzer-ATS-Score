@@ -38,7 +38,7 @@ const AnalysisSchema = new mongoose.Schema(
     aiSuggestions: [String],
     strengthPoints: [String],
     improvementAreas: [String],
-    aiProvider: { type: String, enum: ['groq-llama', 'claude', 'fallback'], default: 'fallback' },
+    aiProvider: { type: String, default: 'fallback' },
     scoreLabel: {
       type: String,
       enum: ['Excellent', 'Good', 'Average', 'Below Average', 'Poor'],

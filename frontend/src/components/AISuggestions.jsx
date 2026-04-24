@@ -1,19 +1,24 @@
-const PROVIDER_LABEL = {
-  'groq-llama': { label: 'Llama 3.3 via Groq', icon: 'bi-cpu-fill', color: '#f97316' },
-  'claude':     { label: 'Claude by Anthropic', icon: 'bi-stars',    color: '#4f46e5' },
-  'fallback':   { label: 'Rule-based Analysis', icon: 'bi-gear-fill', color: '#64748b' },
-};
-
 export default function AISuggestions({ strengths = [], improvements = [], aiGenerated = false, aiProvider = 'fallback' }) {
-  const meta = PROVIDER_LABEL[aiProvider] || PROVIDER_LABEL.fallback;
+  const isAI = aiGenerated && aiProvider !== 'fallback';
 
   return (
     <div>
-      <div className="d-flex align-items-center gap-2 mb-3 p-2 rounded" style={{ background: `${meta.color}12`, border: `1px solid ${meta.color}30` }}>
-        <i className={`bi ${meta.icon}`} style={{ color: meta.color }} />
-        <small className="fw-600" style={{ color: meta.color }}>
-          {aiGenerated ? `AI-Powered Analysis — ${meta.label}` : meta.label}
+      <div className="d-flex align-items-center gap-2 mb-3 p-2 rounded"
+        style={{
+          background: isAI ? 'rgba(79,70,229,0.08)' : 'rgba(100,116,139,0.08)',
+          border: `1px solid ${isAI ? 'rgba(79,70,229,0.25)' : 'rgba(100,116,139,0.25)'}`,
+        }}>
+        <i className={`bi ${isAI ? 'bi-stars' : 'bi-gear-fill'}`}
+          style={{ color: isAI ? '#4f46e5' : '#64748b' }} />
+        <small className="fw-600" style={{ color: isAI ? '#4f46e5' : '#64748b' }}>
+          {isAI ? `AI-Powered Analysis` : 'Rule-based Analysis'}
         </small>
+        {isAI && (
+          <span className="badge rounded-pill ms-auto px-2"
+            style={{ background: 'rgba(79,70,229,0.12)', color: '#4f46e5', fontSize: '0.7rem' }}>
+            {aiProvider.toUpperCase()}
+          </span>
+        )}
       </div>
 
       {strengths.length > 0 && (

@@ -12,7 +12,7 @@ const {
   computeOverallScore,
   getScoreLabel,
 } = require('../services/atsScorer');
-const { generateAISuggestions, getActiveProvider } = require('../ai');
+const { generateAISuggestions, generateCoverLetter, rewriteBullets, getActiveProvider } = require('../ai');
 
 async function analyzeResume(req, res, next) {
   let filePath = null;
@@ -32,7 +32,6 @@ async function analyzeResume(req, res, next) {
 
     const hasJobDescription = jobDescription && jobDescription.trim().length >= 10;
 
-    // Run all 6 scoring dimensions
     const sections              = extractSections(resumeText);
     const { matched, missing, keywordScore } = analyzeKeywords(resumeText, jobDescription);
     const extractedSkills       = extractSkillsFromResume(resumeText);
@@ -191,4 +190,49 @@ async function getStats(req, res, next) {
   }
 }
 
-module.exports = { analyzeResume, getAnalysisHistory, getAnalysisById, deleteAnalysis, getStats };
+async function coverLetter(req, res, next) {
+  try {
+    const analysis = await Analysis.findById(req.params.id).select('resumeText jobDescription jobTitle').lean();
+    if (!analysis) {
+      return res.status(404).json({ success: false, message: 'Analysis not found' });
+    }
+
+    const result = await generateCoverLetter(
+      analysis.resumeText || '',
+      analysis.jobDescription || '',
+      analysis.jobTitle || ''
+    );
+
+    return res.json({ success: true, data: result });
+  } catch (err) {
+    console.error('Cover letter error:', err);
+    next(err);
+  }
+}
+
+async function rewriteBulletsHandler(req, res, next) {
+  try {
+    const { text } = req.body;
+    if (!text || text.trim().length < 5) {
+      return res.status(400).json({ success: false, message: 'Please provide the bullet point text to rewrite' });
+    }
+
+    const analysis = await Analysis.findById(req.params.id).select('jobDescription jobTitle').lean();
+    if (!analysis) {
+      return res.status(404).json({ success: false, message: 'Analysis not found' });
+    }
+
+    const result = await rewriteBullets(
+      text.trim(),
+      analysis.jobDescription || '',
+      analysis.jobTitle || ''
+    );
+
+    return res.json({ success: true, data: result });
+  } catch (err) {
+    console.error('Rewrite error:', err);
+    next(err);
+  }
+}
+
+module.exports = { analyzeResume, getAnalysisHistory, getAnalysisById, deleteAnalysis, getStats, coverLetter, rewriteBulletsHandler };
