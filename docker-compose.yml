@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      dockerfile: Dockerfile
+      context: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGODB_URI=mongodb://root:Pa55WWord@mongo:27017/ResumeAnalyser?authSource=admin
+    depends_on:
+      - mongo
+    
+  frontend:
+    build:
+      dockerfile: Dockerfile
+      context: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27000:27000"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=Pa55WWord
+    volumes:
+      - mongo_data:/data/db
+
+
+volumes:
+  mongo_data:
